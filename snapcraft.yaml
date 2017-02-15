@@ -64,13 +64,6 @@ parts:
     shell: bash
     shell-flags: ['-eux', '-o', 'pipefail']
     shell-command: |
-      apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys F1831DDAFC42E99D
-      add-apt-repository ppa:jonathonf/golang-1.7
-      apt update
-      apt remove -y golang-go
-      apt install -y golang-1.7
-      export GOROOT=/usr/lib/go-1.7
-      export PATH="$GOROOT/bin:$PATH"
       go version
 
       source "$SNAPDIR/prep-docker-build.sh"
@@ -100,6 +93,10 @@ parts:
       - git
     stage-packages:
       - aufs-tools
+    after: [go]
+
+  go:
+    source-tag: 'go1.7.5'
 
   containerd:
     plugin: shell
