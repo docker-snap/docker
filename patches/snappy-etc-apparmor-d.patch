@@ -2,12 +2,14 @@ diff --git a/profiles/apparmor/apparmor.go b/profiles/apparmor/apparmor.go
 index 51dfa5c..4def938 100644
 --- a/profiles/apparmor/apparmor.go
 +++ b/profiles/apparmor/apparmor.go
-@@ -16,11 +16,23 @@ import (
+@@ -15,11 +15,23 @@ import (
  
  var (
  	// profileDirectory is the file store for apparmor profiles and macros.
 -	profileDirectory = "/etc/apparmor.d"
 +	profileDirectory = defaultProfileDirectory()
+ 	// defaultProfilePath is the default path for the apparmor profile to be saved.
+ 	defaultProfilePath = path.Join(profileDirectory, "docker")
  )
  
 +func defaultProfileDirectory() string {

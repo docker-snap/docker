@@ -1,5 +1,5 @@
 name: docker
-version: 1.13.0-0
+version: 1.11.2-11
 summary: Docker Linux container runtime
 description: Docker complements kernel namespacing with a high-level API which operates at the process level. It runs unix processes with strong guarantees of isolation and repeatability across servers.
 
@@ -34,6 +34,7 @@ apps:
       - firewall-control
       - support
       - privileged
+      - account-control
     slots:
       - docker-daemon
 
@@ -44,6 +45,8 @@ apps:
       - docker-cli
       - network
       - home
+  help:
+    command: help
 
 parts:
   snappy-bins:
@@ -59,49 +62,37 @@ parts:
 
   docker:
     plugin: shell
-    source: https://github.com/docker/docker/archive/v1.13.0.tar.gz
+    source: https://github.com/docker/docker/archive/v1.11.2.tar.gz
     source-type: tar
     shell: bash
     shell-flags: ['-eux', '-o', 'pipefail']
     shell-command: |
-      apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys F1831DDAFC42E99D
-      export GOROOT=/usr/lib/go-1.7
-      export PATH="$GOROOT/bin:$PATH"
-      go version
-
       source "$SNAPDIR/prep-docker-build.sh"
       
       ./hack/make.sh dynbinary
       
       ls -l bundles/latest/*/
       
-      clientBin='bundles/latest/dynbinary-client/docker'
-      daemonBin='bundles/latest/dynbinary-daemon/dockerd'
-      "$clientBin" -v
-      "$daemonBin" -v
-      "$clientBin" -v | grep -q "$DOCKER_GITCOMMIT"
-      "$daemonBin" -v | grep -q "$DOCKER_GITCOMMIT"
+      dockerBin='bundles/latest/dynbinary/docker'
+      "$dockerBin" -v
+      "$dockerBin" -v | grep -q "$DOCKER_GITCOMMIT"
       
       install -d "$DESTDIR/bin"
-      install -T "$(readlink -f "$clientBin")" "$DESTDIR/bin/docker"
-      install -T "$(readlink -f "$daemonBin")" "$DESTDIR/bin/dockerd"
+      install -T "$(readlink -f "$dockerBin")" "$DESTDIR/bin/docker"
     build-packages:
-      - software-properties-common
       - btrfs-tools
       - gcc
+      - golang-go
       - libc6-dev
       - libdevmapper-dev
       - libltdl-dev
       - patch
-      - git
-      - pkg-config
-      - golang-1.7
     stage-packages:
       - aufs-tools
 
   containerd:
     plugin: shell
-    source: https://github.com/docker/containerd/archive/d7975b89804b207b68f8b446cf1e2af72589bfcf.tar.gz
+    source: https://github.com/docker-snap/containerd/archive/arm64-epoll-backport.tar.gz
     source-type: tar
     shell: bash
     shell-flags: ['-ex']
@@ -117,12 +108,12 @@ parts:
       install -T bin/containerd-shim "$DESTDIR/bin/docker-containerd-shim"
       install -T bin/ctr "$DESTDIR/bin/docker-containerd-ctr"
     build-packages:
-      - golang-1.7
+      - golang-go
       - make
 
   runc:
     plugin: shell
-    source: https://github.com/opencontainers/runc/archive/51371867a01c467f08af739783b8beafc154c4d7.tar.gz
+    source: https://github.com/opencontainers/runc/archive/v0.1.1.tar.gz
     source-type: tar
     shell: bash
     shell-flags: ['-ex']
@@ -136,14 +127,20 @@ parts:
       install -d "$DESTDIR/bin"
       install -T runc "$DESTDIR/bin/docker-runc"
     build-packages:
-      - golang-1.7
+      - golang-go
       - libapparmor-dev
       - libseccomp-dev
       - make
 
   compose:
     plugin: python2
-    source: https://github.com/docker/compose/archive/1.10.0.tar.gz
+    source: https://github.com/docker/compose/archive/1.7.1.tar.gz
     source-type: tar
+
+  help:
+    plugin: copy
+    files:
+      src/help: bin/
+
 
 # vim:set et ts=2 sw=2:
