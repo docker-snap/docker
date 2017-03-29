@@ -15,9 +15,6 @@ workaround_lp1606510() {
     name=`grep "DISTRIB_DESCRIPTION" /etc/lsb-release | cut -d '=' -f2 | sed 's/"*"//g'`
     if [ "$name" = "Ubuntu Core 16" ]; then
         default_socket_group=docker-snap
-        if [ ! $(getent group $default_socket_group) ]; then
-            useradd --system --extrausers $default_socket_group
-        fi
     fi
 }
 
