@@ -1,5 +1,5 @@
 name: docker
-version: 1.11.2-11
+version: 1.11.2-12
 summary: Docker Linux container runtime
 description: Docker complements kernel namespacing with a high-level API which operates at the process level. It runs unix processes with strong guarantees of isolation and repeatability across servers.
 
@@ -135,11 +135,5 @@ parts:
     plugin: python2
     source: https://github.com/docker/compose/archive/1.7.1.tar.gz
     source-type: tar
-
-  help:
-    plugin: copy
-    files:
-      src/help: bin/
-
 
 # vim:set et ts=2 sw=2:
