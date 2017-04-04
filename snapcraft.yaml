@@ -1,5 +1,5 @@
 name: docker
-version: 1.11.2-11
+version: 1.11.2-12
 summary: Docker Linux container runtime
 description: Docker complements kernel namespacing with a high-level API which operates at the process level. It runs unix processes with strong guarantees of isolation and repeatability across servers.
 
@@ -53,8 +53,8 @@ parts:
     shell: bash
     shell-flags: ['-ex']
     shell-command: |
-      install -d "$DESTDIR/bin"
-      install -t "$DESTDIR/bin" "$SNAPDIR"/bin/*
+      install -d "$SNAPCRAFT_PART_INSTALL/bin"
+      install -t "$SNAPCRAFT_PART_INSTALL/bin" "$SNAPDIR"/bin/*
     stage-packages:
       #- adduser
       - mount
@@ -76,8 +76,8 @@ parts:
       "$dockerBin" -v
       "$dockerBin" -v | grep -q "$DOCKER_GITCOMMIT"
       
-      install -d "$DESTDIR/bin"
-      install -T "$(readlink -f "$dockerBin")" "$DESTDIR/bin/docker"
+      install -d "$SNAPCRAFT_PART_INSTALL/bin"
+      install -T "$(readlink -f "$dockerBin")" "$SNAPCRAFT_PART_INSTALL/bin/docker"
     build-packages:
       - btrfs-tools
       - gcc
@@ -102,10 +102,10 @@ parts:
       
       make GIT_COMMIT= GIT_BRANCH= LDFLAGS=
       
-      install -d "$DESTDIR/bin"
-      install -T bin/containerd "$DESTDIR/bin/docker-containerd"
-      install -T bin/containerd-shim "$DESTDIR/bin/docker-containerd-shim"
-      install -T bin/ctr "$DESTDIR/bin/docker-containerd-ctr"
+      install -d "$SNAPCRAFT_PART_INSTALL/bin"
+      install -T bin/containerd "$SNAPCRAFT_PART_INSTALL/bin/docker-containerd"
+      install -T bin/containerd-shim "$SNAPCRAFT_PART_INSTALL/bin/docker-containerd-shim"
+      install -T bin/ctr "$SNAPCRAFT_PART_INSTALL/bin/docker-containerd-ctr"
     build-packages:
       - golang-go
       - make
@@ -123,8 +123,8 @@ parts:
       
       make BUILDTAGS='seccomp apparmor selinux' COMMIT=
       
-      install -d "$DESTDIR/bin"
-      install -T runc "$DESTDIR/bin/docker-runc"
+      install -d "$SNAPCRAFT_PART_INSTALL/bin"
+      install -T runc "$SNAPCRAFT_PART_INSTALL/bin/docker-runc"
     build-packages:
       - golang-go
       - libapparmor-dev
@@ -135,11 +135,5 @@ parts:
     plugin: python2
     source: https://github.com/docker/compose/archive/1.7.1.tar.gz
     source-type: tar
-
-  help:
-    plugin: copy
-    files:
-      src/help: bin/
-
 
 # vim:set et ts=2 sw=2:
