@@ -15,13 +15,8 @@ echo -e "\nOn Ubuntu Core 16, after installing the docker snap from store,"
 echo -e "Firstly, you need to connect the home interfaces as it's not auto-connected by default."
 echo -e "\tsudo snap connect docker:home :home"
 
-echo -e "\nSecondly, add a user and group \"docker-snap\" for the first installation"
-echo -e "and reload the snap "
-echo -e "\tsudo useradd --system --extrausers --create-home docker-snap"
-echo -e "\tsudo snap disable docker"
-echo -e "\tsudo snap enable  docker"
-
-echo -e "\nThirdly, please switch to newly created docker-snap user."
+echo -e "\nSecondly, please switch to root user."
 echo -e "\tsudo -s"
-echo -e "\tsu docker-snap"
-echo -e "\tcd $"HOME""
+echo -e "\tcd /root"
+
+echo -e "\nThen have fun with docker in snappy."
